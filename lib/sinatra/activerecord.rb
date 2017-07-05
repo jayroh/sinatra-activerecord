@@ -47,6 +47,9 @@ module Sinatra
         ActiveRecord::Base.configurations[environment.to_s] = spec.stringify_keys
         ActiveRecord::Base.establish_connection(spec.stringify_keys)
       else
+        pool = ENV.fetch("DB_POOL", 5)
+        spec = "#{spec}?pool=#{pool}"
+
         ActiveRecord::Base.establish_connection(spec)
         ActiveRecord::Base.configurations ||= {}
         ActiveRecord::Base.configurations[environment.to_s] = ActiveRecord::ConnectionAdapters::ConnectionSpecification::ConnectionUrlResolver.new(spec).to_hash
